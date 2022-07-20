@@ -13,12 +13,7 @@ using System;
 public class UDPListener : MonoBehaviour
 {
     //public TextMeshProUGUI Notifications;
-    private const int S1Port= 65013;
-    private const int S2Port = 6514;
-    private const int S3Port = 65015;
-    private const int P1Port = 65016;
-    private const int P2Port = 65017;
-    private const int R1Port = 65018;
+    private const int ListenPort= 65013;
 
     public TMP_Text Switch1Text;
     public TMP_Text Switch2Text;
@@ -65,17 +60,19 @@ public class UDPListener : MonoBehaviour
     private void ReceiveData()
     {
         Debug.Log("Starting to recieve data");
-        UdpClient S1client = new UdpClient(S1Port);
+        UdpClient client = new UdpClient(ListenPort);
         while (true)
         {
+
+            print("Test");
 
             try
             {
 
-                RXPort = S1Port;
+                RXPort = ListenPort;
                 DisplayText = Switch1Text;
                 IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
-                byte[] data = S1client.Receive(ref anyIP);
+                byte[] data = client.Receive(ref anyIP);
 
                 DataIn = Encoding.UTF8.GetString(data);
 
@@ -95,6 +92,36 @@ public class UDPListener : MonoBehaviour
 
     private void ChangeText()
     {
-        DisplayText.text = RXPort.ToString() + DisplayMessage;
+        if (DisplayMessage.Contains("S1"))
+        {
+
+            Switch1Text.text = DisplayMessage;
+        }
+
+        else if (DisplayMessage.Contains("S2"))
+        {
+
+            Switch2Text.text = DisplayMessage;
+        }
+        else if (DisplayMessage.Contains("S3"))
+        {
+
+            Switch3Text.text = DisplayMessage;
+        }
+        else if (DisplayMessage.Contains("P1"))
+        {
+
+            Pot1Text.text = DisplayMessage;
+        }
+        else if (DisplayMessage.Contains("P2"))
+        {
+
+            Pot2Text.text = DisplayMessage;
+        }
+        else if (DisplayMessage.Contains("R1"))
+        {
+
+            Rot1Text.text = DisplayMessage;
+        }
     }
 }
