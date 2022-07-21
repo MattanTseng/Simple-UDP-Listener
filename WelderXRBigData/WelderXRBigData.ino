@@ -4,7 +4,7 @@ char ssid[] = "WelderXR";        //  ENTER Wifi SSID (network name) BETWEEN QUOT
 char pass[] = "39910646";        // ENTER Wifi password BETWEEN QUOTES
 // UDP Variables
 unsigned int localPort = 2390;        // local port to listen on
-const char* computerIP = "192.168.0.100";         // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
+const char* computerIP = "192.168.0.103";         // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
 const unsigned int TXPort = 65013;
 String Message;
 String Test = "Test";
