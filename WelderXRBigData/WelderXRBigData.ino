@@ -9,15 +9,7 @@ const unsigned int TXPort = 65013;
 String Message;
 String Test = "Test";
 
-// these variables will be used to see if there is a change
-int OldS1;
-int OldS2;
-int OldS3;
-int OldP1;
-int OldP2;
-int OldP3;
-
-
+// These are the identifiers for the information being sent over UDP
 String S1Type = "S1";
 String S2Type = "S2";
 String S3Type = "S3";
@@ -25,8 +17,12 @@ String P1Type = "P1";
 String P2Type = "P2";
 String P3Type = "P3";
 String R1Type = "R1";
+
+//These are variables that are used for the rotary encoder
 int counter =0;
 String currentDir = "";
+
+// WiFi setup stuff. 
 int status = WL_IDLE_STATUS;      // Status of WiFi connection
 WiFiUDP Udp;                          // Instantiate UDP class
 // Define the pins for inputs
@@ -49,24 +45,22 @@ int S1Val;
 int S2Val;
 int S3Val;
 
+// This is where the potentiometer values will be stored
 float P1Val;
 float P2Val;
 float P3Val;
 
+// These variables will determine direction of the rotary encoder. 
 int currentStateCLK;
 int lastStateCLK;
-unsigned long lastButtonPress = 0;
 void setup() 
 {
 
-  lastStateCLK = digitalRead(EncoderA);
 
-  
-  OldP1 = analogRead(Pot1);
-  OldP2 = analogRead(Pot2);
     // setup the pin modes
   /************************************************/
   // put your setup code here, to run once:
+  // I used pullup inputs because they are more stable than pull down
   pinMode(Switch1, INPUT_PULLUP);
   pinMode(Switch2, INPUT_PULLUP);
   pinMode(Switch3, INPUT_PULLUP);
@@ -75,6 +69,9 @@ void setup()
   //pinMode(Pot1, INPUT);
   //pinMode(Pot2, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+
+// Read out the initial states of the encoder.
+  lastStateCLK = digitalRead(EncoderA);
   
   // Setup wifi connection
   /**********************************************/
@@ -89,20 +86,15 @@ void setup()
   Udp.begin(localPort);
 }
 void loop() {
-
-    //Serial.print("A");
-    //Serial.println(digitalRead(EncoderA));
-    //Serial.print("B" );
-    //Serial.println(digitalRead(EncoderB));
   currentStateCLK = digitalRead(EncoderA);
 
   // If last and current state of CLK are different, then pulse occurred
   // React to only 1 state change to avoid double count
   if (currentStateCLK != lastStateCLK  && currentStateCLK == 1){
-    Serial.print("A");
-    Serial.println(digitalRead(EncoderA));
-    Serial.print("B" );
-    Serial.println(digitalRead(EncoderB));
+    //Serial.print("A");
+    //Serial.println(digitalRead(EncoderA));
+    //Serial.print("B" );
+    //Serial.println(digitalRead(EncoderB));
     // If the DT state is different than the CLK state then
     // the encoder is rotating CCW so decrement
     if (digitalRead(EncoderB) != lastStateCLK) {
@@ -114,10 +106,10 @@ void loop() {
       currentDir ="R";
     }
 
-    Serial.print("Direction: ");
-    Serial.print(currentDir);
-    Serial.print(" | Counter: ");
-    Serial.println(counter);
+    //Serial.print("Direction: ");
+    //Serial.print(currentDir);
+    //Serial.print(" | Counter: ");
+    //Serial.println(counter);
   }
     Message = R1Type + String(counter);
     char buf1[Message.length() + 1];
@@ -129,56 +121,33 @@ void loop() {
   // Remember last CLK state
   lastStateCLK = currentStateCLK;
 
-
-
-  
   P1Val = analogRead(Pot1);
   P2Val = analogRead(Pot2);
   P3Val = analogRead(Pot3);
 
-  if(P1Val <  OldP1 -40 ||P1Val > OldP1 +40){
-    Serial.println(P1Val);
-    Serial.println("Pot 1 Change");
-    OldP1 = P1Val;
-  }
-    P1Val = P1Val; //map(P1Val, 0, 1023, 0, 1);
-    Message = P1Type + String(P1Val);
-    char buf2[Message.length() + 1];
-    Message.toCharArray(buf2, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf2);
-    Udp.endPacket();
+  P1Val = P1Val; //map(P1Val, 0, 1023, 0, 1);
+  Message = P1Type + String(P1Val);
+  char buf2[Message.length() + 1];
+  Message.toCharArray(buf2, 50);
+  Udp.beginPacket(computerIP, TXPort);
+  Udp.write(buf2);
+  Udp.endPacket();
 
-    
+  P2Val = P2Val; //map(P2Val, 0, 1023, 0, 1);
+  Message = P2Type + String(P2Val);
+  char buf3[Message.length() + 1];
+  Message.toCharArray(buf3, 50);
+  Udp.beginPacket(computerIP, TXPort);
+  Udp.write(buf3);
+  Udp.endPacket();
 
-  if(P2Val <  OldP2 -40 ||P2Val > OldP2 +40){
-    Serial.println(P2Val);
-    Serial.println("Pot 2 Change");
-    OldP2 = P2Val;
-  }
-    P2Val = P2Val; //map(P2Val, 0, 1023, 0, 1);
-    Message = P2Type + String(P2Val);
-    char buf3[Message.length() + 1];
-    Message.toCharArray(buf3, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf3);
-    Udp.endPacket();
-
-    //Serial.print("P2: ");
-    //Serial.println(P2Val);
-
-    if(P3Val <  OldP3 -40 ||P3Val > OldP3 +40){
-    Serial.println(P3Val);
-    Serial.println("Pot 3 Change");
-    OldP3 = P3Val;
-  }
-    P3Val = P3Val; //map(P3Val, 0, 1023, 0, 1);
-    Message = P3Type + String(P3Val);
-    char buf4[Message.length() + 1];
-    Message.toCharArray(buf4, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf4);
-    Udp.endPacket();
+  P3Val = P3Val; //map(P3Val, 0, 1023, 0, 1);
+  Message = P3Type + String(P3Val);
+  char buf4[Message.length() + 1];
+  Message.toCharArray(buf4, 50);
+  Udp.beginPacket(computerIP, TXPort);
+  Udp.write(buf4);
+  Udp.endPacket();
 
 
   
@@ -205,12 +174,6 @@ void loop() {
     S3Val = 0;
   }
     
-    
-  if(S1Val != OldS1){
-    Serial.println(S1Val);
-    Serial.println("Switch 1 Change");
-    OldS1 = S1Val;
-    }
     Message = S1Type + String(S1Val);
     char buf5[Message.length() + 1];
     Message.toCharArray(buf5, 50);
@@ -218,29 +181,19 @@ void loop() {
     Udp.write(buf5);
     Udp.endPacket();
 
-    if(S2Val != OldS2){
-      Serial.println(S2Val);
-      Serial.println("Switch 2 Change");
-      OldS2 = S2Val;
-    }
-      Message = S2Type + String(S2Val);
-      char buf6[Message.length() + 1];
-      Message.toCharArray(buf6, 50);
-      Udp.beginPacket(computerIP, TXPort);
-      Udp.write(buf6);
-      Udp.endPacket();
+    Message = S2Type + String(S2Val);
+    char buf6[Message.length() + 1];
+    Message.toCharArray(buf6, 50);
+    Udp.beginPacket(computerIP, TXPort);
+    Udp.write(buf6);
+    Udp.endPacket();
 
-    if(S3Val != OldS3){
-      Serial.println(S3Val);
-      Serial.println("Switch 3 Change");
-      OldS3 = S3Val;
-    }
-      Message = S3Type + String(S3Val);
-      char buf7[Message.length() + 1];
-      Message.toCharArray(buf7, 50);
-      Udp.beginPacket(computerIP, TXPort);
-      Udp.write(buf7);
-      Udp.endPacket();
+    Message = S3Type + String(S3Val);
+    char buf7[Message.length() + 1];
+    Message.toCharArray(buf7, 50);
+    Udp.beginPacket(computerIP, TXPort);
+    Udp.write(buf7);
+    Udp.endPacket();
 
 
 
@@ -256,13 +209,4 @@ void connectToAP()
     // wait 1 second for connection:
     delay(1000);
   }
-}
-
-void SendData(String Source, int Value){
-    String Content = Source + String(Value);
-    char buf[Content.length() + 1];
-    Message.toCharArray(buf, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf);
-    Udp.endPacket();
 }
