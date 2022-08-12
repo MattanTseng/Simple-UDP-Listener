@@ -147,8 +147,6 @@ void loop() {
     P3Val += analogRead(Pot3);
   }
 
-
-  
     P1Val = P1Val/4;
     P2Val = P2Val/4;
     P3Val = P3Val/4;
@@ -157,14 +155,17 @@ void loop() {
     SendData(P2Type, P2Val);
     SendData(P3Type, P3Val);
 
-/*
+
     Serial.print("Pot1: ");
     Serial.println(P1Val);
+    /*
     Serial.print("Pot2: ");
     Serial.println(P2Val);
+    
     Serial.print("Pot3: ");
     Serial.println(P3Val);
-*/
+    */
+
 
   
   // Read the sensors
@@ -207,19 +208,19 @@ void loop() {
     Serial.println(S1Val);
     Serial.println("Switch 1 Change");
     OldS1 = S1Val;
-    }
+  }
 
-    if(S2Val != OldS2){
-      Serial.println(S2Val);
-      Serial.println("Switch 2 Change");
-      OldS2 = S2Val;
-    }
+  if(S2Val != OldS2){
+    Serial.println(S2Val);
+    Serial.println("Switch 2 Change");
+    OldS2 = S2Val;
+   }
 
-    if(S3Val != OldS3){
-      Serial.println(S3Val);
-      Serial.println("Switch 3 Change");
-      OldS3 = S3Val;
-    }
+  if(S3Val != OldS3){
+    Serial.println(S3Val);
+    Serial.println("Switch 3 Change");
+    OldS3 = S3Val;
+  }
 }
 
 // Connect to wifi network
