@@ -151,10 +151,6 @@ void loop() {
     P2Val = P2Val/4;
     P3Val = P3Val/4;
 
-    SendData(P1Type, P1Val);
-    SendData(P2Type, P2Val);
-    SendData(P3Type, P3Val);
-
 
     Serial.print("Pot1: ");
     Serial.println(P1Val);
@@ -199,6 +195,10 @@ void loop() {
   S2Val = floor(S2Val/3);
   S3Val = floor(S3Val/3);
 
+
+  SendData(P1Type, P1Val);
+  SendData(P2Type, P2Val);
+  SendData(P3Type, P3Val);
   SendData(S1Type, S1Val);
   SendData(S2Type, S2Val);
   SendData(S3Type, S3Val);
