@@ -1,10 +1,19 @@
 #include <WiFiNINA.h>         // Wifi library
-#include <WiFiUdp.h>          // UDP library
+#include <WiFiUdp.h>  
+
+
+// UDP library
+/*
 char ssid[] = "WelderXR";        //  ENTER Wifi SSID (network name) BETWEEN QUOTES
 char pass[] = "39910646";        // ENTER Wifi password BETWEEN QUOTES
+*/
+
+char ssid[] = "IASTATE";
+char pass[] = "";
 // UDP Variables
 unsigned int localPort = 2390;        // local port to listen on
-const char* computerIP = "192.168.0.103";         // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
+const char* computerIP = "oculus2-alpha.vrac.iastate.edu";
+//const char* computerIP = "192.168.0.96";         // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
 const unsigned int TXPort = 65013;
 String Message;
 String Test = "Test";
