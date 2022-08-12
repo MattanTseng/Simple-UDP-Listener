@@ -140,119 +140,86 @@ void loop() {
 
 
 
+
+  for(int i =0; i < 4; i++){
+    P1Val += analogRead(Pot1);
+    P2Val += analogRead(Pot2);
+    P3Val += analogRead(Pot3);
+  }
+
+
   
-  P1Val = analogRead(Pot1);
-  P2Val = analogRead(Pot2);
-  P3Val = analogRead(Pot3);
+    P1Val = P1Val/4;
+    P2Val = P2Val/4;
+    P3Val = P3Val/4;
 
-  if(P1Val <  OldP1 -40 ||P1Val > OldP1 +40){
+    SendData(P1Type, P1Val);
+    SendData(P2Type, P2Val);
+    SendData(P3Type, P3Val);
+
+/*
+    Serial.print("Pot1: ");
     Serial.println(P1Val);
-    Serial.println("Pot 1 Change");
-    OldP1 = P1Val;
-  }
-    P1Val = P1Val; //map(P1Val, 0, 1023, 0, 1);
-    Message = P1Type + String(P1Val);
-    char buf2[Message.length() + 1];
-    Message.toCharArray(buf2, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf2);
-    Udp.endPacket();
-
-    
-
-  if(P2Val <  OldP2 -40 ||P2Val > OldP2 +40){
+    Serial.print("Pot2: ");
     Serial.println(P2Val);
-    Serial.println("Pot 2 Change");
-    OldP2 = P2Val;
-  }
-    P2Val = P2Val; //map(P2Val, 0, 1023, 0, 1);
-    Message = P2Type + String(P2Val);
-    char buf3[Message.length() + 1];
-    Message.toCharArray(buf3, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf3);
-    Udp.endPacket();
-
-    //Serial.print("P2: ");
-    //Serial.println(P2Val);
-
-    if(P3Val <  OldP3 -40 ||P3Val > OldP3 +40){
+    Serial.print("Pot3: ");
     Serial.println(P3Val);
-    Serial.println("Pot 3 Change");
-    OldP3 = P3Val;
-  }
-    P3Val = P3Val; //map(P3Val, 0, 1023, 0, 1);
-    Message = P3Type + String(P3Val);
-    char buf4[Message.length() + 1];
-    Message.toCharArray(buf4, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf4);
-    Udp.endPacket();
-
+*/
 
   
   // Read the sensors
   /*******************************************/
-  if (digitalRead(Switch1) == HIGH){
-    S1Val = 1;
-  }
-  else {
-    S1Val = 0;
+
+
+  for(int i = 0; i < 3; i++){
+    if (digitalRead(Switch1) == HIGH){
+      S1Val += 1;
+    }
+    else {
+      S1Val += 0;
+    }
+  
+    if (digitalRead(Switch2) == HIGH){
+      S2Val += 1;
+    }
+    else {
+      S2Val += 0;
+    }
+  
+    if (digitalRead(Switch3) == HIGH){
+      S3Val += 1;
+    }
+    else {
+      S3Val += 0;
+    }
   }
 
-  if (digitalRead(Switch2) == HIGH){
-    S2Val = 1;
-  }
-  else {
-    S2Val = 0;
-  }
+  S1Val = floor(S1Val/3);
+  S2Val = floor(S2Val/3);
+  S3Val = floor(S3Val/3);
 
-  if (digitalRead(Switch3) == HIGH){
-    S3Val = 1;
-  }
-  else {
-    S3Val = 0;
-  }
-    
+  SendData(S1Type, S1Val);
+  SendData(S2Type, S2Val);
+  SendData(S3Type, S3Val);
+
     
   if(S1Val != OldS1){
     Serial.println(S1Val);
     Serial.println("Switch 1 Change");
     OldS1 = S1Val;
     }
-    Message = S1Type + String(S1Val);
-    char buf5[Message.length() + 1];
-    Message.toCharArray(buf5, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf5);
-    Udp.endPacket();
 
     if(S2Val != OldS2){
       Serial.println(S2Val);
       Serial.println("Switch 2 Change");
       OldS2 = S2Val;
     }
-      Message = S2Type + String(S2Val);
-      char buf6[Message.length() + 1];
-      Message.toCharArray(buf6, 50);
-      Udp.beginPacket(computerIP, TXPort);
-      Udp.write(buf6);
-      Udp.endPacket();
 
     if(S3Val != OldS3){
       Serial.println(S3Val);
       Serial.println("Switch 3 Change");
       OldS3 = S3Val;
     }
-      Message = S3Type + String(S3Val);
-      char buf7[Message.length() + 1];
-      Message.toCharArray(buf7, 50);
-      Udp.beginPacket(computerIP, TXPort);
-      Udp.write(buf7);
-      Udp.endPacket();
-
-
-
 }
 
 // Connect to wifi network
@@ -267,10 +234,10 @@ void connectToAP()
   }
 }
 
-void SendData(String Source, int Value){
+void SendData(String Source, float Value){
     String Content = Source + String(Value);
     char buf[Content.length() + 1];
-    Message.toCharArray(buf, 50);
+    Content.toCharArray(buf, 50);
     Udp.beginPacket(computerIP, TXPort);
     Udp.write(buf);
     Udp.endPacket();
