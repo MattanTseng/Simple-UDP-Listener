@@ -131,13 +131,17 @@ void loop() {
     Serial.print(" | Counter: ");
     Serial.println(counter);
   }
-    //SendData(R1Type, counter);
-    Message = R1Type + String(counter);
+    SendData(R1Type, counter);
+    
+    
+    /*Message = R1Type + String(counter);
     char buf1[Message.length() + 1];
     Message.toCharArray(buf1, 50);
     Udp.beginPacket(computerIP, TXPort);
     Udp.write(buf1);
     Udp.endPacket();
+    */
+    
   // Remember last CLK state
   lastStateCLK = currentStateCLK;
 
@@ -181,11 +185,11 @@ void loop() {
       P2Val = P2Val/IterationCount;
       P3Val = P3Val/IterationCount;
       SendData(P1Type, P1Val);
-      SendData(P2Type, P2Val);
+      SendData(P2Type, P2Val-300);
       SendData(P3Type, P3Val);
 
-      Serial.print("P1: ");
-      Serial.println(P1Val);
+      Serial.print("P2: ");
+      Serial.println(P2Val);
 
       
       S1Val = floor(S1Val/IterationCount);
@@ -220,4 +224,14 @@ void SendData(String Source, float Value){
     Udp.beginPacket(computerIP, TXPort);
     Udp.write(buf);
     Udp.endPacket();
+}
+
+void SendData(String Source, int Value){
+    String Content = Source + String(Value);
+    char buf[Content.length() + 1];
+    Content.toCharArray(buf, 50);
+    Udp.beginPacket(computerIP, TXPort);
+    Udp.write(buf);
+    Udp.endPacket();
+    
 }
