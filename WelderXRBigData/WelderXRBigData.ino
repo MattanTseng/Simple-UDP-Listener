@@ -53,6 +53,9 @@ const int Pot1 = A0;
 const int Pot2 = A1;
 const int Pot3 = A2;
 
+int IterationCount = 5;
+int ReadingCount =0;
+
 // This is where the Switch values will be stored
 int S1Val;
 int S2Val;
@@ -128,32 +131,24 @@ void loop() {
     Serial.print(" | Counter: ");
     Serial.println(counter);
   }
+    //SendData(R1Type, counter);
     Message = R1Type + String(counter);
     char buf1[Message.length() + 1];
     Message.toCharArray(buf1, 50);
     Udp.beginPacket(computerIP, TXPort);
     Udp.write(buf1);
     Udp.endPacket();
-
   // Remember last CLK state
   lastStateCLK = currentStateCLK;
 
-
-
-
-  for(int i =0; i < 4; i++){
     P1Val += analogRead(Pot1);
     P2Val += analogRead(Pot2);
     P3Val += analogRead(Pot3);
-  }
-
-    P1Val = P1Val/4;
-    P2Val = P2Val/4;
-    P3Val = P3Val/4;
 
 
-    Serial.print("Pot1: ");
-    Serial.println(P1Val);
+
+    /*Serial.print("Pot1: ");
+    Serial.println(P1Val); */
     /*
     Serial.print("Pot2: ");
     Serial.println(P2Val);
@@ -162,65 +157,48 @@ void loop() {
     Serial.println(P3Val);
     */
 
-
-  
   // Read the sensors
   /*******************************************/
 
 
-  for(int i = 0; i < 3; i++){
-    if (digitalRead(Switch1) == HIGH){
-      S1Val += 1;
-    }
-    else {
-      S1Val += 0;
-    }
-  
-    if (digitalRead(Switch2) == HIGH){
-      S2Val += 1;
-    }
-    else {
-      S2Val += 0;
-    }
-  
-    if (digitalRead(Switch3) == HIGH){
-      S3Val += 1;
-    }
-    else {
-      S3Val += 0;
-    }
+  if (digitalRead(Switch1) == HIGH){
+    S1Val += 1;
   }
 
-  S1Val = floor(S1Val/3);
-  S2Val = floor(S2Val/3);
-  S3Val = floor(S3Val/3);
 
-
-  SendData(P1Type, P1Val);
-  SendData(P2Type, P2Val);
-  SendData(P3Type, P3Val);
-  SendData(S1Type, S1Val);
-  SendData(S2Type, S2Val);
-  SendData(S3Type, S3Val);
-
-    
-  if(S1Val != OldS1){
-    Serial.println(S1Val);
-    Serial.println("Switch 1 Change");
-    OldS1 = S1Val;
+  if (digitalRead(Switch2) == HIGH){
+    S2Val += 1;
   }
 
-  if(S2Val != OldS2){
-    Serial.println(S2Val);
-    Serial.println("Switch 2 Change");
-    OldS2 = S2Val;
-   }
-
-  if(S3Val != OldS3){
-    Serial.println(S3Val);
-    Serial.println("Switch 3 Change");
-    OldS3 = S3Val;
+  if (digitalRead(Switch3) == HIGH){
+    S3Val += 1;
   }
+
+
+
+    if (ReadingCount == IterationCount){
+      P1Val = P1Val/IterationCount;
+      P2Val = P2Val/IterationCount;
+      P3Val = P3Val/IterationCount;
+      SendData(P1Type, P1Val);
+      SendData(P2Type, P2Val);
+      SendData(P3Type, P3Val);
+
+      Serial.print("P1: ");
+      Serial.println(P1Val);
+
+      
+      S1Val = floor(S1Val/IterationCount);
+      S2Val = floor(S2Val/IterationCount);
+      S3Val = floor(S3Val/IterationCount);
+      SendData(S1Type, S1Val);
+      SendData(S2Type, S2Val);
+      SendData(S3Type, S3Val);
+
+      ReadingCount = 0;
+    }
+
+    ReadingCount++;
 }
 
 // Connect to wifi network
