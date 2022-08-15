@@ -4,6 +4,7 @@
 
 // UDP library
 /*
+ * These values are for the VRAC router when the demo is to be used on the road. 
 char ssid[] = "WelderXR";        //  ENTER Wifi SSID (network name) BETWEEN QUOTES
 char pass[] = "39910646";        // ENTER Wifi password BETWEEN QUOTES
 */
@@ -16,7 +17,6 @@ const char* computerIP = "oculus2-alpha.vrac.iastate.edu";
 //const char* computerIP = "192.168.0.96";         // ENTER YOUR COMPUTER'S IP BETWEEN QUOTES
 const unsigned int TXPort = 65013;
 String Message;
-String Test = "Test";
 
 // these variables will be used to see if there is a change
 int OldS1;
@@ -53,15 +53,12 @@ const int Pot1 = A0;
 const int Pot2 = A1;
 const int Pot3 = A2;
 
-// These values are how the sensor data is averaged to avoid false signals. 
-int IterationCount = 5;
-int ReadingCount =0;
-
 // This is where the Switch values will be stored
 int S1Val;
 int S2Val;
 int S3Val;
 
+// values to store the potentiometer readings
 float P1Val;
 float P2Val;
 float P3Val;
@@ -101,12 +98,9 @@ void setup()
   // UDP Connect with report via serial
   Udp.begin(localPort);
 }
-void loop() {
 
-    //Serial.print("A");
-    //Serial.println(digitalRead(EncoderA));
-    //Serial.print("B" );
-    //Serial.println(digitalRead(EncoderB));
+
+void loop() {
   currentStateCLK = digitalRead(EncoderA);
 
   // If last and current state of CLK are different, then pulse occurred
@@ -134,15 +128,6 @@ void loop() {
   }
     SendData(R1Type, counter);
     
-    
-    /*Message = R1Type + String(counter);
-    char buf1[Message.length() + 1];
-    Message.toCharArray(buf1, 50);
-    Udp.beginPacket(computerIP, TXPort);
-    Udp.write(buf1);
-    Udp.endPacket();
-    */
-    
   // Remember last CLK state
   lastStateCLK = currentStateCLK;
 
@@ -153,59 +138,19 @@ void loop() {
     SendData(P2Type, P2Val-300);
     SendData(P3Type, P3Val);
 
-    S1Val = digitalRead(Switch1)
-    S2Val = digitalRead(Switch2)
-    S3Val = digitalRead(Switch3)
+    // read the switches. 
+    S1Val = digitalRead(Switch1);
+    S2Val = digitalRead(Switch2);
+    S3Val = digitalRead(Switch3);
 
+    // send the switch information 
     SendData(S1Type, S1Val);
     SendData(S2Type, S2Val);
     SendData(S3Type, S3Val);
 
-  // Read the sensors
-  /*******************************************/
-
-
-  if (digitalRead(Switch1) == HIGH){
-    S1Val += 1;
-  }
-
-
-  if (digitalRead(Switch2) == HIGH){
-    S2Val += 1;
-  }
-
-  if (digitalRead(Switch3) == HIGH){
-    S3Val += 1;
-  }
-
-
-
-    if (ReadingCount == IterationCount){
-      P1Val = P1Val/IterationCount;
-      P2Val = P2Val/IterationCount;
-      P3Val = P3Val/IterationCount;
-      SendData(P1Type, P1Val);
-      SendData(P2Type, P2Val-300);
-      SendData(P3Type, P3Val);
-
-      Serial.print("P2: ");
-      Serial.println(P2Val);
-
-      
-      S1Val = floor(S1Val/IterationCount);
-      S2Val = floor(S2Val/IterationCount);
-      S3Val = floor(S3Val/IterationCount);
-      SendData(S1Type, S1Val);
-      SendData(S2Type, S2Val);
-      SendData(S3Type, S3Val);
-
-      ReadingCount = 0;
-    }
-
-    ReadingCount++;
 }
 
-// Connect to wifi network
+// Function to connect to wifi network
 void connectToAP() 
 {
   // Try to connect to Wifi network
@@ -217,6 +162,7 @@ void connectToAP()
   }
 }
 
+// the switches are ints and the pots are floats. So I need to use functional overloading to send the different types of data
 void SendData(String Source, float Value){
     String Content = Source + String(Value);
     char buf[Content.length() + 1];
