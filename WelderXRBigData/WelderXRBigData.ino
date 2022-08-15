@@ -18,15 +18,6 @@ const char* computerIP = "oculus2-alpha.vrac.iastate.edu";
 const unsigned int TXPort = 65013;
 String Message;
 
-// these variables will be used to see if there is a change
-int OldS1;
-int OldS2;
-int OldS3;
-int OldP1;
-int OldP2;
-int OldP3;
-
-
 String S1Type = "S1";
 String S2Type = "S2";
 String S3Type = "S3";
@@ -71,9 +62,6 @@ void setup()
 
   lastStateCLK = digitalRead(EncoderA);
 
-  
-  OldP1 = analogRead(Pot1);
-  OldP2 = analogRead(Pot2);
     // setup the pin modes
   /************************************************/
   // put your setup code here, to run once:
@@ -82,8 +70,6 @@ void setup()
   pinMode(Switch3, INPUT_PULLUP);
   pinMode(EncoderA, INPUT);
   pinMode(EncoderB, INPUT);
-  //pinMode(Pot1, INPUT);
-  //pinMode(Pot2, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   
   // Setup wifi connection
