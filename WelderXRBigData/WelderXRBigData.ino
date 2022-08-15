@@ -146,21 +146,20 @@ void loop() {
   // Remember last CLK state
   lastStateCLK = currentStateCLK;
 
-    P1Val += analogRead(Pot1);
-    P2Val += analogRead(Pot2);
-    P3Val += analogRead(Pot3);
+    P1Val = analogRead(Pot1);
+    P2Val = analogRead(Pot2);
+    P3Val = analogRead(Pot3);
+    SendData(P1Type, P1Val);
+    SendData(P2Type, P2Val-300);
+    SendData(P3Type, P3Val);
 
+    S1Val = digitalRead(Switch1)
+    S2Val = digitalRead(Switch2)
+    S3Val = digitalRead(Switch3)
 
-
-    /*Serial.print("Pot1: ");
-    Serial.println(P1Val); */
-    /*
-    Serial.print("Pot2: ");
-    Serial.println(P2Val);
-    
-    Serial.print("Pot3: ");
-    Serial.println(P3Val);
-    */
+    SendData(S1Type, S1Val);
+    SendData(S2Type, S2Val);
+    SendData(S3Type, S3Val);
 
   // Read the sensors
   /*******************************************/
