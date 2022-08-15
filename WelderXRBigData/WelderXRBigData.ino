@@ -53,6 +53,7 @@ const int Pot1 = A0;
 const int Pot2 = A1;
 const int Pot3 = A2;
 
+// These values are how the sensor data is averaged to avoid false signals. 
 int IterationCount = 5;
 int ReadingCount =0;
 
