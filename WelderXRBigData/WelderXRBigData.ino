@@ -151,6 +151,7 @@ void connectToAP()
 // the switches are ints and the pots are floats. So I need to use functional overloading to send the different types of data
 void SendData(String Source, float Value){
     String Content = Source + String(Value);
+    Serial.println(Content);
     char buf[Content.length() + 1];
     Content.toCharArray(buf, 50);
     Udp.beginPacket(computerIP, TXPort);
@@ -159,7 +160,9 @@ void SendData(String Source, float Value){
 }
 
 void SendData(String Source, int Value){
+
     String Content = Source + String(Value);
+    Serial.println(Content);
     char buf[Content.length() + 1];
     Content.toCharArray(buf, 50);
     Udp.beginPacket(computerIP, TXPort);
