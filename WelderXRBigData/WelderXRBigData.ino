@@ -107,10 +107,12 @@ void loop() {
       currentDir ="R";
     }
 
+/*
     Serial.print("Direction: ");
     Serial.print(currentDir);
     Serial.print(" | Counter: ");
     Serial.println(counter);
+    */
   }
     SendData(R1Type, counter);
     
@@ -121,7 +123,7 @@ void loop() {
     P2Val = analogRead(Pot2);
     P3Val = analogRead(Pot3);
     SendData(P1Type, P1Val);
-    SendData(P2Type, P2Val-300);
+    SendData(P2Type, P2Val);
     SendData(P3Type, P3Val);
 
     // read the switches. 
@@ -151,7 +153,7 @@ void connectToAP()
 // the switches are ints and the pots are floats. So I need to use functional overloading to send the different types of data
 void SendData(String Source, float Value){
     String Content = Source + String(Value);
-    Serial.println(Content);
+    //Serial.println(Content);
     char buf[Content.length() + 1];
     Content.toCharArray(buf, 50);
     Udp.beginPacket(computerIP, TXPort);
@@ -160,9 +162,8 @@ void SendData(String Source, float Value){
 }
 
 void SendData(String Source, int Value){
-
     String Content = Source + String(Value);
-    Serial.println(Content);
+    //Serial.println(Content);
     char buf[Content.length() + 1];
     Content.toCharArray(buf, 50);
     Udp.beginPacket(computerIP, TXPort);
