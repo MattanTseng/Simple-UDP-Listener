@@ -99,20 +99,20 @@ void loop() {
     // If the DT state is different than the CLK state then
     // the encoder is rotating CCW so decrement
     if (digitalRead(EncoderB) != lastStateCLK) {
-      counter --;
+      counter ++;
       currentDir ="L";
     } else {
       // Encoder is rotating CW so increment
-      counter ++;
+      counter --;
       currentDir ="R";
     }
 
-/*
+
     Serial.print("Direction: ");
     Serial.print(currentDir);
     Serial.print(" | Counter: ");
     Serial.println(counter);
-    */
+    
   }
     SendData(R1Type, counter);
     
